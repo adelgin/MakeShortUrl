@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Сокращение ссылок</title>
+    {% block stylesheets %}
+        <link href="{{ asset('/styles/index.css') }}" type="text/css" rel="stylesheet" />
+    {% endblock %}
+</head>
+<body>
+<h1>Сокращение ссылок</h1>
+<form method="post" action="/" name="index">
+    <input type="url" name="url" placeholder="Введите ссылку" required style="width:300px;">
+    <button type="submit">Добавить</button>
+    <a href="{{ path('all') }}" type="reset" class = "back-button">Все ссылки</a>
+</form>
+{% if short_url %}
+<p>Короткая ссылка: <a href={{ short_url }}>{{ short_url }}</a></p>
+{% endif %}
+{% if error %}
+<p> Ошибка! {{ error }} </p>
+{% endif %}
+</body>
+</html>

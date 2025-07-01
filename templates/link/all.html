@@ -1,0 +1,52 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>All Shortened Links</title>
+    {% block stylesheets %}
+        <link href="{{ asset('/styles/index.css') }}" type="text/css" rel="stylesheet" />
+    {% endblock %}
+</head>
+<body>
+<h1>Все сокращенные ссылки</h1>
+
+{% if links is empty %}
+<p>Ссылок ещё не добавлено!</p>
+{% else %}
+<form action = "delete_links" method="POST">
+    <table border="1">
+        <thead>
+        <tr>
+            <th>Выделить</th>
+            <th>Оригинальная ссылка</th>
+            <th>Короткая ссылка</th>
+            <th>Время последнего обращения</th>
+            <th>Количество переходов по ссылке</th>
+        </tr>
+        </thead>
+        <tbody>
+        {% for link in links %}
+        <tr>
+            <td>
+                <input type="checkbox" name="selected_links[]" value="{{ link.id }}" />
+            </td>
+            <td><a href="{{ link.originalUrl }}">{{ link.originalUrl }}</a></td>
+            <td><a href="{{ short_url_start }}{{ link.shortCode }}">{{ short_url_start }}{{ link.shortCode }}</a></td>
+            {% if link.getLastClickTimeDate() %}
+                <td>{{ link.getLastClickTimeDate() |date('H:i:s d.m.Y') }}</td>
+            {% else %}
+                <td>По ссылке ещё ни разу не переходили!</td>
+            {% endif %}
+            <td>{{ link.clickCount }}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+    </table>
+    <button type="submit" class="back-button">Удалить выделенные</button>
+
+</form>
+{% endif %}
+<br>
+<a href="{{ path('home') }}" class="back-button">На главную</a>
+</body>
+</html>

@@ -1,0 +1,143 @@
+form[name="index"] {
+    max-width: 400px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #660000;
+    border-radius: 8px;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+}
+body {
+    font-family: Arial, sans-serif;
+    line-height: 1.6;
+    margin: 0;
+    padding: 20px;
+    background-color: #121212;
+    color: #f5f5f5;
+    text-align: center;
+}
+
+h1 {
+    color: #ffcccc;
+    margin-bottom: 20px;
+}
+
+input[type="url"] {
+    width: 100%;
+    padding: 10px;
+    margin-bottom: 15px;
+    border: 1px solid #800000;
+    border-radius: 4px;
+    box-sizing: border-box;
+    background-color: #990000;
+    color: #f5f5f5;
+}
+
+input[type="url"]::placeholder {
+    color: #cc6666;
+}
+
+button {
+    background-color: #800000;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+button:hover {
+    background-color: #cc0000;
+}
+
+p {
+    margin-top: 20px;
+    font-size: 18px;
+}
+
+a {
+    color: #ff6666;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: underline;
+}
+
+input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 40px;
+    height: 40px;
+    border: 2px solid #800000;
+    border-radius: 4px;
+    background-color: #330000;
+    cursor: pointer;
+    position: relative;
+}
+
+input[type="checkbox"]:checked {
+    background-color: #cc0000;
+    border-color: #cc0000;
+}
+
+input[type="checkbox"]:checked::before {
+    content: '\2713';
+    font-size: 32px;
+    color: #fff;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+}
+
+input[type="checkbox"]:hover {
+    border-color: #cc0000;
+}
+
+.back-button {
+    background-color: #800000;
+    color: white;
+    padding: 12px 20px;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    font-size: 16px;
+    text-decoration: none;
+}
+
+.back-button:hover {
+    background-color: #cc0000;
+}
+
+table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-bottom: 20px;
+}
+
+th, td {
+    padding: 12px 15px;
+    text-align: left;
+    border-bottom: 1px solid #444;
+}
+
+th {
+    background-color: #440000;
+    color: #ffcccc;
+    font-weight: bold;
+}
+
+tbody tr:nth-child(even) {
+    background-color: #220000;
+}
+
+td a {
+    display: block;
+    padding: 8px 0;
+    text-decoration: none;
+}
+
+td a:hover {
+    text-decoration: underline;
+}
