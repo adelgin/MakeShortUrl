@@ -1,0 +1,15 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Ошибка!</title>
+    {% block stylesheets %}
+        <link href="{{ asset('/styles/style.css') }}" type="text/css" rel="stylesheet" />
+    {% endblock %}
+</head>
+<body>
+<h1> {{ error }} </h1>
+<a href="{{ path('all') }}" type="reset" class = "back-button">Все ссылки</a>
+<a href="{{ path('home') }}" class="back-button">На главную</a>
+</body>
+<html>

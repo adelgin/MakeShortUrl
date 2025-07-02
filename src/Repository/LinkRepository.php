@@ -7,6 +7,7 @@ use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
+ * Класс для взаимодействия с базой данных links
  * @extends ServiceEntityRepository<Link>
  */
 class LinkRepository extends ServiceEntityRepository
@@ -16,11 +17,20 @@ class LinkRepository extends ServiceEntityRepository
         parent::__construct($registry, Link::class);
     }
 
+    /**
+     * Метод для удаления объекта из базы данных
+     * @param Link $link
+     * @return void
+     */
     public function remove(Link $link): void
     {
         $this->getEntityManager()->remove($link);
     }
 
+    /**
+     * Метод для применения изменений в базе данных
+     * @return void
+     */
     public function flush(): void {
         $this->getEntityManager()->flush();
     }
@@ -56,12 +66,22 @@ class LinkRepository extends ServiceEntityRepository
         $link->setLastClickTimeDate(new \DateTime());
     }
 
+    /**
+     * Метод для insert или update
+     * @param Link $link
+     * @return void
+     */
     public function persist(Link $link): void {
         $this->getEntityManager()->persist($link);
     }
 
+    /**
+     * Метод для уменьшения счётчика нажатия
+     * @param Link $link
+     * @return void
+     */
     public function clickDelete(Link $link): void {
-        $link->setClickCount($link->getClickCount() - 1);
+        $link->setClickCount($link->getClickCount() - 1 > 0 ? $link->getClickCount() - 1 : 0);
     }
 
     /**

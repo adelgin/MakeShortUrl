@@ -12,6 +12,14 @@
         {% endblock %}
     </head>
     <body>
-        {% block body %}{% endblock %}
+        {% block body %}
+            <header>
+                <h1>Сделаем ссылку короче!</h1>
+                <nav>
+                    <a href="{{ path('home') }}">Главная</a>
+                    <a href="{{ path('all') }}">Все ссылки</a>
+                </nav>
+            </header>
+        {% endblock %}
     </body>
 </html>

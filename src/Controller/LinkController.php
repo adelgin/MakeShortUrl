@@ -11,7 +11,7 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
 /**
- * Класс LinkController
+ * Класс LinkController для сокращения ссылок
  */
 final class LinkController extends AbstractController
 {
@@ -31,7 +31,7 @@ final class LinkController extends AbstractController
             $originalUrl = $request->request->get('url');
 
             if (!filter_var($originalUrl, FILTER_VALIDATE_URL)) {
-                return $this->render('link/index.html', [
+                return $this->render('link/index.html.twig', [
                     'short_url' => null,
                     'error' => 'Введён невалидный URL! Проверьте ссылку ещё раз!'
                 ]);
@@ -41,14 +41,14 @@ final class LinkController extends AbstractController
                 for ($i = 0; $i < 6; $i++) {
                     $shortCode .= $characters[random_int(0, strlen($characters) - 1)];
                 }
-            } while ($repository->findOneBy(['short_code' => $shortCode]));
+            } while (!is_null($repository->findByShortCode($shortCode)));
             $link = $repository->addLink($originalUrl, $shortCode);
             $repository->persist($link);
             $repository->flush();
             $shortURL = $request->getSchemeAndHttpHost() . '/short/' . $link->getShortCode();
         }
 
-        return $this->render('link/index.html', [
+        return $this->render('link/index.html.twig', [
             'short_url' => $shortURL,
             'error' => NULL,
         ]);
@@ -63,15 +63,14 @@ final class LinkController extends AbstractController
     public function shortRedirect(string $code, LinkRepository $repository): Response
     {
         $link = $repository->findByShortCode($code);
-        if ($link) {
+        if (!is_null($link)) {
             $originalUrl = $link->getOriginalUrl();
         } else {
-            return $this->render('link/error.html', ['error' => 'EROOR']);
+            return new Response($this->renderView('link/error.html.twig', ['error' => 'Ошибка! Ссылка никуда не ведёт!']), Response::HTTP_NOT_FOUND );
         }
 
-
-        if (!$originalUrl || !filter_var($originalUrl, FILTER_VALIDATE_URL)) {
-            throw $this->createNotFoundException('Error 404! Link not found!');
+        if (is_null($originalUrl) || !filter_var($originalUrl, FILTER_VALIDATE_URL)) {
+            return $this->render('link/error.html.twig', ['error' => 'Ошибка! Ссылка не найдена!']);
         }
 
         $repository->clickUpdate($link);
@@ -91,7 +90,7 @@ final class LinkController extends AbstractController
     public function all(Request $request, LinkRepository $repository): Response
     {
         $links = $repository->findAll();
-        return $this->render('link/all.html', [
+        return $this->render('link/all.html.twig', [
             'links' => $links,
             'short_url_start' => $request->getSchemeAndHttpHost() . '/short/',
         ]);
