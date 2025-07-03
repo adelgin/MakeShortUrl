@@ -125,6 +125,7 @@ final class LinkController extends AbstractController
     #[Route('/all', name: 'all')]
     public function all(Request $request, LinkRepository $repository): Response
     {
+        date_default_timezone_set('Europe/Moscow');
         $links = $repository->findAll();
 
         foreach ($links as $link) {

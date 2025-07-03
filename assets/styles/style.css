@@ -141,3 +141,47 @@ td a {
 td a:hover {
     text-decoration: underline;
 }
+
+.form-check {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 15px;
+}
+
+.form-check-input {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    accent-color: #cc0000;
+}
+
+.form-check-label {
+    margin: 0;
+    color: #ffb3b3;
+}
+
+.date-picker {
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 15px;
+}
+
+.date-picker label {
+    margin-bottom: 8px;
+    color: #ffb3b3;
+}
+
+.date-picker input[type="date"] {
+    padding: 10px;
+    border: 1px solid #800000;
+    border-radius: 4px;
+    background-color: #990000;
+    color: #f5f5f5;
+    font-family: Arial, sans-serif;
+    max-width: 300px;
+}
+
+.date-picker input[type="date"]::-webkit-calendar-picker-indicator {
+    filter: invert(0.8);
+}

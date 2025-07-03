@@ -25,14 +25,27 @@ class LinkTypeForm extends AbstractType
             ->add('is_one_time', CheckboxType::class, [
                 'label' => 'Одноразовая ссылка',
                 'required' => false,
+                'attr' => [
+                    'class' => 'form-check-input'
+                ],
+                'label_attr' => [
+                    'class' => 'form-check-label'
+                ],
+                'row_attr' => [
+                    'class' => 'form-check'
+                ]
             ])
             ->add('expiration_date', null, [
                 'label' => 'Дата устаревания ссылки',
                 'required' => false,
-                #'empty_data' => "",
                 'widget' => 'single_text',
-            ])
-            ;
+                'attr' => [
+                    'class' => 'date-picker-input'
+                ],
+                'row_attr' => [
+                    'class' => 'date-picker'
+                ]
+            ]);
     }
 
     public function configureOptions(OptionsResolver $resolver): void

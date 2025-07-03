@@ -39,6 +39,7 @@
             {% else %}
                 <td>По ссылке ещё ни разу не переходили!</td>
             {% endif %}
+            <td>{{ link.clickCount }}</td>
             {% if link.isOneTime%}
                 <td>Одноразовая</td>
             {% else %}
@@ -49,7 +50,6 @@
             {% else %}
                 <td>Бесконечная ссылка!</td>
             {% endif %}
-            <td>{{ link.clickCount }}</td>
         </tr>
         {% endfor %}
         </tbody>
