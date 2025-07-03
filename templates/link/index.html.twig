@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html lang="ru">
 <head>
     <meta charset="UTF-8">
     <title>Сокращение ссылок</title>
@@ -8,17 +8,35 @@
     {% endblock %}
 </head>
 <body>
+
 <h1>Сокращение ссылок</h1>
-<form method="post" action="/" name="index">
-    <input type="url" name="url" placeholder="Введите ссылку" required style="width:300px;">
+
+{{ form_start(form, {'attr': {'class': 'index'}}) }}
+    {{ form_row(form.original_url, {'attr': {'class': 'url'}}) }}
+    {{ form_row(form.is_one_time, {'attr': {'class': 'form-control'}}) }}
+    {{ form_row(form.expiration_date, {'attr': {'type': 'date'}}) }}
     <button type="submit">Добавить</button>
-    <a href="{{ path('all') }}" type="reset" class = "back-button">Все ссылки</a>
-</form>
+{{ form_end(form) }}
+
+<a href="{{ path('all') }}" type="reset" class = "back-button">Все ссылки</a>
+
 {% if short_url %}
 <p>Короткая ссылка: <a href={{ short_url }}>{{ short_url }}</a></p>
 {% endif %}
 {% if error %}
 <p> Ошибка! {{ error }} </p>
 {% endif %}
+
+{#<form method="post" action="/" name="index">#}
+{#    <input type="url" name="url" placeholder="Введите ссылку" required style="width:300px;">#}
+{#    <p>Одноразовая ссылка</p>#}
+{#    <input type="checkbox" name="isOneTime" value="1" />#}
+{#    <p>Дата устаревания ссылки</p>#}
+{#    <input type="date" id="$expirationDate" name="expirationDate">#}
+{#    <br>#}
+{#    <button type="submit">Добавить</button>#}
+{#    <a href="{{ path('all') }}" type="reset" class = "back-button">Все ссылки</a>#}
+{#</form>#}
+
 </body>
 </html>

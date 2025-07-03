@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250701074803 extends AbstractMigration
+final class Version20250703122548 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,7 +20,8 @@ final class Version20250701074803 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('CREATE TABLE link (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, original_url VARCHAR(255) NOT NULL, short_code VARCHAR(255) NOT NULL, creation_date DATETIME NOT NULL, last_click_time_date DATETIME DEFAULT NULL, click_count INTEGER DEFAULT NULL)');
+        $this->addSql('CREATE TABLE link (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, original_url VARCHAR(255) NOT NULL, short_code VARCHAR(255) NOT NULL, creation_date DATETIME NOT NULL, last_click_time_date DATETIME DEFAULT NULL, click_count INTEGER DEFAULT NULL, is_one_time BOOLEAN DEFAULT NULL, expiration_date DATETIME DEFAULT NULL --(DC2Type:datetime_immutable)
+        )');
         $this->addSql('CREATE TABLE messenger_messages (id INTEGER PRIMARY KEY AUTOINCREMENT NOT NULL, body CLOB NOT NULL, headers CLOB NOT NULL, queue_name VARCHAR(190) NOT NULL, created_at DATETIME NOT NULL --(DC2Type:datetime_immutable)
         , available_at DATETIME NOT NULL --(DC2Type:datetime_immutable)
         , delivered_at DATETIME DEFAULT NULL --(DC2Type:datetime_immutable)

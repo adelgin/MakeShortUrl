@@ -2,6 +2,8 @@
 
 namespace App\Controller;
 
+use App\Entity\Link;
+use App\Form\LinkTypeForm;
 use App\Repository\LinkRepository;
 use Random\RandomException;
 use Symfony\Bundle\FrameworkBundle\Controller\AbstractController;
@@ -9,6 +11,24 @@ use Symfony\Component\HttpFoundation\Response;
 use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
+
+//var_dump($originalUrl);
+//
+//if (!filter_var($originalUrl, FILTER_VALIDATE_URL)) {
+//    return $this->render('link/index.html.twig', [
+//        'form' => $form->createView(),
+//        'short_url' => null,
+//        'error' => 'Введён невалидный URL! Проверьте ссылку ещё раз!'
+//    ]);
+//}
+//
+//if ($expirationDate === false) {
+//    return $this->render('link/index.html.twig', [
+//        'short_url' => null,
+//        'error' => 'Введена некорректная дата!'
+//    ]);
+//}
+
 
 /**
  * Класс LinkController для сокращения ссылок
@@ -24,34 +44,45 @@ final class LinkController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(Request $request, LinkRepository $repository): Response
     {
+        date_default_timezone_set('Europe/Moscow');
         $shortURL = null;
-        $characters = '0123456789abcdefghilkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $link = new Link();
+        $form = $this->createForm(LinkTypeForm::class, $link);
 
-        if ($request->isMethod('POST')) {
-            $originalUrl = $request->request->get('url');
+        $form->handleRequest($request);
 
-            if (!filter_var($originalUrl, FILTER_VALIDATE_URL)) {
-                return $this->render('link/index.html.twig', [
-                    'short_url' => null,
-                    'error' => 'Введён невалидный URL! Проверьте ссылку ещё раз!'
-                ]);
-            }
+        if ($form->isSubmitted() && $form->isValid()) {
+            $characters = '0123456789abcdefghilkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
             do {
                 $shortCode = '';
                 for ($i = 0; $i < 6; $i++) {
                     $shortCode .= $characters[random_int(0, strlen($characters) - 1)];
                 }
             } while (!is_null($repository->findByShortCode($shortCode)));
-            $link = $repository->addLink($originalUrl, $shortCode);
+
+            is_null($link->getExpirationDate()) ?? $link->setExpirationDate(null);
+            $link->setClickCount(0);
+            $link->setCreationDate(new \DateTime());
+            $link->setShortCode($shortCode);
+
             $repository->persist($link);
             $repository->flush();
             $shortURL = $request->getSchemeAndHttpHost() . '/short/' . $link->getShortCode();
+
+            return $this->render('link/index.html.twig', [
+                'form' => $form->createView(),
+                'short_url' => $shortURL,
+                'error' => NULL,
+            ]);
         }
 
         return $this->render('link/index.html.twig', [
+            'form' => $form->createView(),
             'short_url' => $shortURL,
             'error' => NULL,
         ]);
+
     }
 
     /**
@@ -73,8 +104,13 @@ final class LinkController extends AbstractController
             return $this->render('link/error.html.twig', ['error' => 'Ошибка! Ссылка не найдена!']);
         }
 
-        $repository->clickUpdate($link);
-        $repository->persist($link);
+        if ($link->getIsOneTime() === True) {
+            $repository->remove($link);
+        }
+        else {
+            $repository->clickUpdate($link);
+            $repository->persist($link);
+        }
         $repository->flush();
 
         return new RedirectResponse($originalUrl);
@@ -90,6 +126,16 @@ final class LinkController extends AbstractController
     public function all(Request $request, LinkRepository $repository): Response
     {
         $links = $repository->findAll();
+
+        foreach ($links as $link) {
+            if ($link->getExpirationDate() < new \DateTimeImmutable() && $link->getExpirationDate() !== null) {
+                $repository->remove($link);
+                $repository->flush();
+            }
+        }
+
+        $links = $repository->findAll();
+
         return $this->render('link/all.html.twig', [
             'links' => $links,
             'short_url_start' => $request->getSchemeAndHttpHost() . '/short/',

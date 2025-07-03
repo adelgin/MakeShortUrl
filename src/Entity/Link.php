@@ -4,6 +4,7 @@ namespace App\Entity;
 
 use App\Repository\LinkRepository;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: LinkRepository::class)]
 class Link
@@ -14,6 +15,8 @@ class Link
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Assert\NotBlank(message: "URL не может быть пустым")]
+    #[Assert\Url(message: "Введён невалидный URL! Проверьте ссылку ещё раз!")]
     private ?string $original_url = null;
 
     #[ORM\Column(length: 255)]
@@ -27,6 +30,37 @@ class Link
 
     #[ORM\Column(nullable: true)]
     private ?int $click_count = null;
+
+    #[ORM\Column(nullable: true)]
+    private ?bool $is_one_time = null;
+
+    #[ORM\Column(nullable: true)]
+    #[Assert\GreaterThan("today", message: "Дата должна быть в будущем")]
+    private ?\DateTimeImmutable $expiration_date = null;
+
+    public function getIsOneTime(): ?bool
+    {
+        return $this->is_one_time;
+    }
+
+    public function setIsOneTime(?bool $is_one_time): static
+    {
+        $this->is_one_time = $is_one_time;
+
+        return $this;
+    }
+
+    public function getExpirationDate(): ?\DateTimeImmutable
+    {
+        return $this->expiration_date;
+    }
+
+    public function setExpirationDate(?\DateTimeImmutable $expiration_date): static
+    {
+        $this->expiration_date = $expiration_date;
+
+        return $this;
+    }
 
     public function getId(): ?int
     {

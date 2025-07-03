@@ -22,6 +22,8 @@
             <th>Короткая ссылка</th>
             <th>Время последнего обращения</th>
             <th>Количество переходов по ссылке</th>
+            <th>Тип ссылки</th>
+            <th>Дата удаления</th>
         </tr>
         </thead>
         <tbody>
@@ -32,10 +34,20 @@
             </td>
             <td><a href="{{ link.originalUrl }}">{{ link.originalUrl }}</a></td>
             <td><a href="{{ short_url_start }}{{ link.shortCode }}">{{ short_url_start }}{{ link.shortCode }}</a></td>
-            {% if link.getLastClickTimeDate() %}
-                <td>{{ link.getLastClickTimeDate() |date('H:i:s d.m.Y') }}</td>
+            {% if link.lastClickTimeDate%}
+                <td>{{ link.lastClickTimeDate |date('H:i:s d.m.Y') }}</td>
             {% else %}
                 <td>По ссылке ещё ни разу не переходили!</td>
+            {% endif %}
+            {% if link.isOneTime%}
+                <td>Одноразовая</td>
+            {% else %}
+                <td>Многоразовая</td>
+            {% endif %}
+            {% if link.getExpirationDate()%}
+                <td>{{ link.getExpirationDate() |date('H:i:s d.m.Y') }}</td>
+            {% else %}
+                <td>Бесконечная ссылка!</td>
             {% endif %}
             <td>{{ link.clickCount }}</td>
         </tr>
