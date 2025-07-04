@@ -12,24 +12,6 @@ use Symfony\Component\Routing\Attribute\Route;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 
-//var_dump($originalUrl);
-//
-//if (!filter_var($originalUrl, FILTER_VALIDATE_URL)) {
-//    return $this->render('link/index.html.twig', [
-//        'form' => $form->createView(),
-//        'short_url' => null,
-//        'error' => 'Введён невалидный URL! Проверьте ссылку ещё раз!'
-//    ]);
-//}
-//
-//if ($expirationDate === false) {
-//    return $this->render('link/index.html.twig', [
-//        'short_url' => null,
-//        'error' => 'Введена некорректная дата!'
-//    ]);
-//}
-
-
 /**
  * Класс LinkController для сокращения ссылок
  */
@@ -39,7 +21,6 @@ final class LinkController extends AbstractController
      * Главный контроллер, обрабатывающий корневую ссылку '/'
      * @param Request $request принимает http запрос, но данный метод обрабатывает только POST
      * @return Response возвращает сокращенную ссылку и выводит её на страничку
-     * @throws RandomException
      */
     #[Route('/', name: 'home')]
     public function index(Request $request, LinkRepository $repository): Response
@@ -52,14 +33,7 @@ final class LinkController extends AbstractController
         $form->handleRequest($request);
 
         if ($form->isSubmitted() && $form->isValid()) {
-            $characters = '0123456789abcdefghilkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-
-            do {
-                $shortCode = '';
-                for ($i = 0; $i < 6; $i++) {
-                    $shortCode .= $characters[random_int(0, strlen($characters) - 1)];
-                }
-            } while (!is_null($repository->findByShortCode($shortCode)));
+            $shortCode = $repository->generateShortCode();
 
             is_null($link->getExpirationDate()) ?? $link->setExpirationDate(null);
             $link->setClickCount(0);
@@ -93,6 +67,7 @@ final class LinkController extends AbstractController
     #[Route('/short/{code}', name: 'short')]
     public function shortRedirect(string $code, LinkRepository $repository): Response
     {
+        date_default_timezone_set('Europe/Moscow');
         $link = $repository->findByShortCode($code);
         if (!is_null($link)) {
             $originalUrl = $link->getOriginalUrl();
@@ -102,6 +77,12 @@ final class LinkController extends AbstractController
 
         if (is_null($originalUrl) || !filter_var($originalUrl, FILTER_VALIDATE_URL)) {
             return $this->render('link/error.html.twig', ['error' => 'Ошибка! Ссылка не найдена!']);
+        }
+
+        if ($link->getExpirationDate() < new \DateTimeImmutable() && $link->getExpirationDate() !== null) {
+            $repository->remove($link);
+            $repository->flush();
+            return $this->render('link/error.html.twig', ['error' => 'Ошибка! Срок жизни ссылки истёк!']);
         }
 
         if ($link->getIsOneTime() === True) {

@@ -93,25 +93,17 @@ class LinkRepository extends ServiceEntityRepository
         return $this->findAll();
     }
 
-    /**
-     * Метод для добавления ссылки
-     * @param string $originalUrl
-     * @param string $shortCode
-     * @param \DateTime|null $expiration_date
-     * @param bool $isOneTime
-     * @return Link|null
-     */
-//    public function addLink(string $originalUrl, string $shortCode, \DateTime $expiration_date = null, bool $isOneTime = false): ?Link
-//    {
-//        date_default_timezone_set('Europe/Moscow');
-//
-//        $link = new Link();
-//        $link->setOriginalUrl($originalUrl);
-//        $link->setClickCount(0);
-//        $link->setCreationDate(new \DateTime());
-//        $link->setShortCode($shortCode);
-//        $link->setIsOneTime($isOneTime);
-//        !is_null($expiration_date) ?? $link->setExpirationDate($expiration_date);
-//        return $link;
-//    }
+    public function generateShortCode(): string
+    {
+        $characters = '0123456789abcdefghilkmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+
+        do {
+            $shortCode = '';
+            for ($i = 0; $i < 6; $i++) {
+                $shortCode .= $characters[random_int(0, strlen($characters) - 1)];
+            }
+        } while (!is_null($this->findByShortCode($shortCode)));
+
+        return $shortCode;
+    }
 }

@@ -35,7 +35,7 @@ class Link
     private ?bool $is_one_time = null;
 
     #[ORM\Column(nullable: true)]
-    #[Assert\GreaterThan("today", message: "Дата должна быть в будущем")]
+    #[Assert\GreaterThan("+1 minutes", message: "Дата должна быть как минимум на одну минуту больше текущего времени!")]
     private ?\DateTimeImmutable $expiration_date = null;
 
     public function getIsOneTime(): ?bool
