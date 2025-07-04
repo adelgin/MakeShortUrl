@@ -25,7 +25,6 @@ final class LinkController extends AbstractController
     #[Route('/', name: 'home')]
     public function index(Request $request, LinkRepository $repository): Response
     {
-        date_default_timezone_set('Europe/Moscow');
         $shortURL = null;
         $link = new Link();
         $form = $this->createForm(LinkTypeForm::class, $link);
@@ -43,12 +42,6 @@ final class LinkController extends AbstractController
             $repository->persist($link);
             $repository->flush();
             $shortURL = $request->getSchemeAndHttpHost() . '/short/' . $link->getShortCode();
-
-            return $this->render('link/index.html.twig', [
-                'form' => $form->createView(),
-                'short_url' => $shortURL,
-                'error' => NULL,
-            ]);
         }
 
         return $this->render('link/index.html.twig', [
@@ -67,7 +60,6 @@ final class LinkController extends AbstractController
     #[Route('/short/{code}', name: 'short')]
     public function shortRedirect(string $code, LinkRepository $repository): Response
     {
-        date_default_timezone_set('Europe/Moscow');
         $link = $repository->findByShortCode($code);
         if (!is_null($link)) {
             $originalUrl = $link->getOriginalUrl();
@@ -106,7 +98,6 @@ final class LinkController extends AbstractController
     #[Route('/all', name: 'all')]
     public function all(Request $request, LinkRepository $repository): Response
     {
-        date_default_timezone_set('Europe/Moscow');
         $links = $repository->findAll();
 
         foreach ($links as $link) {

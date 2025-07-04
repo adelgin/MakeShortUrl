@@ -61,7 +61,6 @@ class LinkRepository extends ServiceEntityRepository
      * @return void
      */
     public function clickUpdate(Link $link): void {
-        date_default_timezone_set('Europe/Moscow');
         $link->setClickCount($link->getClickCount() + 1);
         $link->setLastClickTimeDate(new \DateTime());
     }
